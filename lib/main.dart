@@ -37,6 +37,7 @@ class _DashboardPageState extends State<DashboardPage> {
     {'name': 'Navigasi Sederhana', 'clicked': false},
     {'name': 'Grid View', 'clicked': false},
   ];
+  bool _aboutClicked = false;
 
   void _navigateToProject(int index) {
     setState(() {
@@ -268,47 +269,85 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildAboutButton(BuildContext context) {
+    final Color indigoColor = Colors.indigo;
+
     return Material(
       child: InkWell(
         onTap: () {
+          setState(() {
+            _aboutClicked = true;
+          });
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AboutMePage()),
-          );
+          ).then((_) {
+            setState(() {
+              _aboutClicked = false;
+            });
+          });
         },
         borderRadius: BorderRadius.circular(14),
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.indigo.withAlpha((0.8 * 255).round()),
-                Colors.indigo,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: _aboutClicked
+                ? LinearGradient(
+                    colors: [
+                      indigoColor.withAlpha((0.8 * 255).round()),
+                      indigoColor,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            color: _aboutClicked ? null : Colors.white,
             borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.indigo.withAlpha((0.4 * 255).round()),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            border: _aboutClicked
+                ? null
+                : Border.all(color: Colors.grey.shade300, width: 1),
+            boxShadow: _aboutClicked
+                ? [
+                    BoxShadow(
+                      color: indigoColor.withAlpha((0.4 * 255).round()),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.person_outline, color: Colors.white),
-              const SizedBox(width: 10),
-              const Text(
-                'Tentang Saya',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: _aboutClicked
+                      ? Colors.white.withAlpha((0.3 * 255).round())
+                      : Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Icon(
+                  Icons.person_outline,
+                  color: _aboutClicked ? Colors.white : Colors.grey,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  'Tentang Saya',
+                  style: TextStyle(
+                    color: _aboutClicked ? Colors.white : Colors.black87,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: _aboutClicked
+                    ? Colors.white.withAlpha((0.7 * 255).round())
+                    : Colors.grey.shade400,
+                size: 16,
               ),
             ],
           ),
